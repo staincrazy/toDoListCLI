@@ -71,7 +71,6 @@ func loadTasksFromFile() {
 		fmt.Println("Error decoding tasks:", err)
 	}
 }
-
 func saveTasksToFile() {
 	file, err := os.Create("tasks.json")
 	if err != nil {
@@ -94,14 +93,13 @@ func saveTasksToFile() {
 	}
 }
 
-// user facing functions
 func displayTasks() {
 	if len(tasks) == 0 {
 		fmt.Println("No tasks to display")
 	}
 
-	for _, task := range tasks {
-		fmt.Printf("Task: %s, Status: %s\n", task.Description, task.Status)
+	for i, task := range tasks {
+		fmt.Printf("<< %d Description: %s, Status: %s >>\n", i+1, task.Description, task.Status)
 	}
 }
 
@@ -123,7 +121,42 @@ func addTask() {
 	fmt.Println("Task added successfully:", description)
 }
 
-func modifyTaskProgress() {}
+func modifyTaskStatus() {
+	displayTasks()
+
+	fmt.Print("Select the task to modify status: ")
+	var taskIndex int
+	_, err := fmt.Scanln(&taskIndex)
+	if err != nil || taskIndex < 0 || taskIndex > len(tasks) {
+		fmt.Println("Invalid task selected", err)
+		return
+	}
+
+	fmt.Print(`
+		Choose new status:
+		1. Not Started
+		2. In Progress
+		3. Complete
+	`)
+	var newStatus int
+	_, err = fmt.Scanln(&newStatus)
+	if err != nil {
+		fmt.Println("Incorrect status selected. Try again:", err)
+		return
+	}
+
+	switch newStatus {
+	case 1:
+		tasks[taskIndex-1].Status = NotStarted
+	case 2:
+		tasks[taskIndex-1].Status = InProgress
+	case 3:
+		tasks[taskIndex-1].Status = Completed
+	}
+	fmt.Println("Task status successfully modified")
+	saveTasksToFile()
+
+}
 
 func removeTask() {}
 
@@ -152,7 +185,7 @@ func main() {
 		case 2:
 			addTask()
 		case 3:
-			modifyTaskProgress()
+			modifyTaskStatus()
 		case 4:
 			showCompletedTasks()
 		case 5:
