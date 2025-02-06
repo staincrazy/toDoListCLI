@@ -92,11 +92,11 @@ func saveTasksToFile() {
 
 func displayTasks() {
 	if len(tasks) == 0 {
-		fmt.Println("No tasks to display")
+		fmt.Println("No tasks to display! ")
 	}
 
 	for i, task := range tasks {
-		fmt.Printf("<< %d Description: %s, Status: %s >>\n", i+1, task.Description, task.Status)
+		fmt.Printf(" << %d Description: %s, Status: %s >>\n", i+1, task.Description, task.Status)
 	}
 }
 
@@ -163,7 +163,10 @@ func removeTask() {
 	_, err := fmt.Scanln(&taskIndex)
 	if err != nil || taskIndex < 0 || taskIndex > len(tasks) {
 		fmt.Println("Invalid task selected", err)
+		return
 	}
+
+	taskIndex -= 1
 
 	tasks = append(tasks[:taskIndex], tasks[taskIndex+1:]...)
 	saveTasksToFile()
