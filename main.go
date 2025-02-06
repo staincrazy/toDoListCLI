@@ -34,9 +34,10 @@ func taskExists(description string) bool {
 	}
 	return false
 }
+
 func displayMenu() {
-	menu := `
-	Main Menu:
+	menu :=
+		`	Main Menu:
 	1. View tasks
 	2. Add task
 	3. Modify task progress
@@ -60,6 +61,7 @@ func loadTasksFromFile() {
 		err := file.Close()
 		if err != nil {
 			fmt.Println("Error closing file:", err)
+			return
 		}
 	}(file)
 
@@ -69,6 +71,7 @@ func loadTasksFromFile() {
 		fmt.Println("Error decoding tasks:", err)
 	}
 }
+
 func saveTasksToFile() {
 	file, err := os.Create("tasks.json")
 	if err != nil {
@@ -79,6 +82,7 @@ func saveTasksToFile() {
 		err := file.Close()
 		if err != nil {
 			fmt.Println("Error closing file:", err)
+			return
 		}
 	}(file)
 
@@ -100,8 +104,9 @@ func displayTasks() {
 		fmt.Printf("Task: %s, Status: %s\n", task.Description, task.Status)
 	}
 }
+
 func addTask() {
-	fmt.Print("Add a description for the new task")
+	fmt.Print("Add a description for the new task: ")
 	var description string
 	_, err := fmt.Scanln(&description)
 	if err != nil {
@@ -117,9 +122,13 @@ func addTask() {
 	saveTasksToFile()
 	fmt.Println("Task added successfully:", description)
 }
+
 func modifyTaskProgress() {}
-func removeTask()         {}
+
+func removeTask() {}
+
 func showCompletedTasks() {}
+
 func exit() {
 	os.Exit(0)
 }
@@ -134,6 +143,7 @@ func main() {
 		_, err := fmt.Scan(&option)
 		if err != nil {
 			fmt.Println("Invalid input, please try again :", err)
+			continue
 		}
 
 		switch option {
