@@ -26,7 +26,6 @@ func (status TaskStatus) String() string {
 }
 
 // helper functions
-
 func taskExists(description string) bool {
 	for _, t := range tasks {
 		if description == t.Description {
@@ -48,8 +47,7 @@ func displayMenu() {
 	fmt.Println(menu)
 }
 
-// main functions
-
+// functions to work with file
 func loadTasksFromFile() {
 	file, err := os.Open("tasks.json")
 	if err != nil {
@@ -69,6 +67,37 @@ func loadTasksFromFile() {
 	err = decoder.Decode(&tasks)
 	if err != nil {
 		fmt.Println("Error decoding tasks:", err)
+	}
+}
+func saveTasksToFile() {
+	file, err := os.Create("tasks.json")
+	if err != nil {
+		fmt.Println("Error creating file:", err)
+		return
+	}
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Println("Error closing file:", err)
+		}
+	}(file)
+
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(tasks)
+	if err != nil {
+		fmt.Println("Error encoding tasks:", err)
+		return
+	}
+}
+
+// user facing functions
+func displayTasks() {
+	if len(tasks) == 0 {
+		fmt.Println("No tasks to display")
+	}
+
+	for _, task := range tasks {
+		fmt.Printf("Task: %s, Status: %s\n", task.Description, task.Status)
 	}
 }
 func addTask() {
@@ -91,26 +120,8 @@ func addTask() {
 func modifyTaskProgress() {}
 func removeTask()         {}
 func showCompletedTasks() {}
-func exit()               {}
-func saveTasksToFile() {
-	file, err := os.Create("tasks.json")
-	if err != nil {
-		fmt.Println("Error creating file:", err)
-		return
-	}
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			fmt.Println("Error closing file:", err)
-		}
-	}(file)
-
-	encoder := json.NewEncoder(file)
-	err = encoder.Encode(tasks)
-	if err != nil {
-		fmt.Println("Error encoding tasks:", err)
-		return
-	}
+func exit() {
+	os.Exit(0)
 }
 
 func main() {
@@ -127,7 +138,7 @@ func main() {
 
 		switch option {
 		case 1:
-			loadTasksFromFile()
+			displayTasks()
 		case 2:
 			addTask()
 		case 3:
