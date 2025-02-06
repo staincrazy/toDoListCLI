@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -103,11 +104,9 @@ func displayTasks() {
 func addTask() {
 	fmt.Print("Add a description for the new task: ")
 	var description string
-	_, err := fmt.Scanln(&description)
-	if err != nil {
-		fmt.Println("Error reading description:", err)
-		return
-	}
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan()
+
 	if taskExists(description) {
 		fmt.Println("Task with such description already exists:", description)
 		return
