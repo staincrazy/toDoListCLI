@@ -103,18 +103,21 @@ func displayTasks() {
 
 func addTask() {
 	fmt.Print("Add a description for the new task: ")
-	var description string
 	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
+	if scanner.Scan() {
+		description := scanner.Text() // Get the scanned text and assign it to description
 
-	if taskExists(description) {
-		fmt.Println("Task with such description already exists:", description)
-		return
+		if taskExists(description) {
+			fmt.Println("Task with such description already exists:", description)
+			return
+		}
+
+		tasks = append(tasks, Task{Description: description, Status: NotStarted})
+		saveTasksToFile()
+		fmt.Println("Task added successfully:", description)
+	} else {
+		fmt.Println("Error reading input:", scanner.Err())
 	}
-
-	tasks = append(tasks, Task{description, NotStarted})
-	saveTasksToFile()
-	fmt.Println("Task added successfully:", description)
 }
 
 func modifyTaskStatus() {
