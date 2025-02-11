@@ -38,12 +38,14 @@ func taskExists(description string) bool {
 func displayMenu() {
 	menu :=
 		`	Main Menu:
+		________________
 		1. View tasks
 		2. Add task
 		3. Modify task progress
 		4. Remove task
 		5. Remove all tasks
 		6. Exit
+		_________________
 		Select an option: `
 
 	fmt.Println(menu)
@@ -201,6 +203,8 @@ func removeAllTasks() {
 }
 
 func exit() {
+	clearConsole()
+	fmt.Println("Bye!")
 	os.Exit(0)
 }
 
