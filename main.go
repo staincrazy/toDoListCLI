@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"runtime"
 )
 
 type Task struct {
@@ -41,10 +42,22 @@ func displayMenu() {
 		2. Add task
 		3. Modify task progress
 		4. Remove task
-		5. Exit
+		5. Remove all tasks
+		6. Exit
 		Select an option: `
 
 	fmt.Println(menu)
+}
+func clearConsole() {
+
+	switch runtime.GOOS {
+	case "windows":
+		fmt.Print("\033[H\033[J")
+	case "linux", "darwin":
+		fmt.Print("\033[H\033[J")
+	default:
+		fmt.Print("\n")
+	}
 }
 
 func loadTasksFromFile() {
@@ -94,6 +107,7 @@ func saveTasksToFile() {
 func displayTasks() {
 	if len(tasks) == 0 {
 		fmt.Println("No tasks to display! ")
+		return
 	}
 
 	for i, task := range tasks {
@@ -102,6 +116,8 @@ func displayTasks() {
 }
 
 func addTask() {
+
+	clearConsole()
 	fmt.Print("Add a description for the new task: ")
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
@@ -121,6 +137,7 @@ func addTask() {
 }
 
 func modifyTaskStatus() {
+	clearConsole()
 	displayTasks()
 
 	fmt.Print("Select the task to modify status: ")
@@ -158,6 +175,7 @@ func modifyTaskStatus() {
 }
 
 func removeTask() {
+	clearConsole()
 	displayTasks()
 	fmt.Println("Select the task to remove: ")
 
@@ -175,7 +193,12 @@ func removeTask() {
 	fmt.Println("Task removed successfully:")
 }
 
-func showCompletedTasks() {}
+func removeAllTasks() {
+	clearConsole()
+	tasks = []Task{}
+	saveTasksToFile()
+	fmt.Println("All tasks removed successfully:")
+}
 
 func exit() {
 	os.Exit(0)
@@ -204,6 +227,8 @@ func main() {
 		case 4:
 			removeTask()
 		case 5:
+			removeAllTasks()
+		case 6:
 			exit()
 		default:
 			saveTasksToFile()
