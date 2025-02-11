@@ -112,11 +112,15 @@ func displayTasks() {
 		return
 	}
 
+	clearConsole()
+	fmt.Println("Tasks:")
+	fmt.Println("_______")
+	fmt.Print("")
 	for i, task := range tasks {
 		fmt.Printf(" << %d Description: %s, Status: %s >>\n", i+1, task.Description, task.Status)
 	}
+	fmt.Println("_______")
 }
-
 func addTask() {
 
 	clearConsole()
@@ -137,7 +141,6 @@ func addTask() {
 		fmt.Println("Error reading input:", scanner.Err())
 	}
 }
-
 func modifyTaskStatus() {
 	clearConsole()
 	displayTasks()
@@ -171,6 +174,7 @@ func modifyTaskStatus() {
 	case 3:
 		tasks[taskIndex-1].Status = Completed
 	}
+	clearConsole()
 	fmt.Println("Task status successfully modified")
 	saveTasksToFile()
 
