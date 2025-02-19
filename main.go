@@ -120,7 +120,9 @@ func displayTasks() {
 		fmt.Printf(" << %d Description: %s, Status: %s >>\n", i+1, task.Description, task.Status)
 	}
 	fmt.Println("_______")
+
 }
+
 func addTask() {
 
 	clearConsole()
@@ -145,11 +147,15 @@ func modifyTaskStatus() {
 	clearConsole()
 	displayTasks()
 
-	fmt.Print("Select the task to modify status: ")
+	if len(tasks) == 0 {
+		return
+	}
+
+	fmt.Print("Select the task to modify status (1-", len(tasks), "): ")
 	var taskIndex int
 	_, err := fmt.Scanln(&taskIndex)
-	if err != nil || taskIndex < 0 || taskIndex > len(tasks) {
-		fmt.Println("Invalid task selected", err)
+	if err != nil || taskIndex < 1 || taskIndex > len(tasks) {
+		fmt.Println("Invalid task index. Please choose a number between 1 and", len(tasks))
 		return
 	}
 
@@ -161,8 +167,8 @@ func modifyTaskStatus() {
 	`)
 	var newStatus int
 	_, err = fmt.Scanln(&newStatus)
-	if err != nil {
-		fmt.Println("Incorrect status selected. Try again:", err)
+	if err != nil || newStatus < 1 || newStatus > 3 {
+		fmt.Println("Invalid status. Please choose a number between 1 and 3")
 		return
 	}
 
@@ -177,18 +183,22 @@ func modifyTaskStatus() {
 	clearConsole()
 	fmt.Println("Task status successfully modified")
 	saveTasksToFile()
-
 }
 
 func removeTask() {
 	clearConsole()
 	displayTasks()
-	fmt.Println("Select the task to remove: ")
+
+	if len(tasks) == 0 {
+		return
+	}
+
+	fmt.Printf("Select the task to remove (1-%d): ", len(tasks))
 
 	var taskIndex int
 	_, err := fmt.Scanln(&taskIndex)
-	if err != nil || taskIndex < 0 || taskIndex > len(tasks) {
-		fmt.Println("Invalid task selected", err)
+	if err != nil || taskIndex < 1 || taskIndex > len(tasks) {
+		fmt.Println("Invalid task index. Please choose a number between 1 and", len(tasks))
 		return
 	}
 
@@ -196,14 +206,14 @@ func removeTask() {
 
 	tasks = append(tasks[:taskIndex], tasks[taskIndex+1:]...)
 	saveTasksToFile()
-	fmt.Println("Task removed successfully:")
+	fmt.Println("Task removed successfully")
 }
 
 func removeAllTasks() {
 	clearConsole()
 	tasks = []Task{}
 	saveTasksToFile()
-	fmt.Println("All tasks removed successfully:")
+	fmt.Println("All tasks removed successfully")
 }
 
 func exit() {
@@ -221,7 +231,15 @@ func main() {
 		var option int
 		_, err := fmt.Scan(&option)
 		if err != nil {
-			fmt.Println("Invalid input, please try again :", err)
+			fmt.Println("Invalid input. Please enter a number between 1 and 6")
+			// Clear the input buffer
+			bufio.NewReader(os.Stdin).ReadString('\n')
+			continue
+		}
+
+		// Validate menu option range
+		if option < 1 || option > 6 {
+			fmt.Println("Invalid option. Please enter a number between 1 and 6")
 			continue
 		}
 
@@ -238,7 +256,10 @@ func main() {
 			removeAllTasks()
 		case 6:
 			exit()
-		default:
+		}
+
+		// Save after any operation
+		if option != 6 { // Don't save if exiting
 			saveTasksToFile()
 		}
 	}
